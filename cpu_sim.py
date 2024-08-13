@@ -9,12 +9,12 @@ def get_initial_velocities(in_coords, initial_speed):
     return rotation_direction * initial_speed / distance_scale
 
 def make_inital_state(inital_speed):
-    positions = np.random.rand(1000) * 384 + np.random.rand(1000) * 384j
+    positions = np.random.rand(2000) * 384 + np.random.rand(2000) * 384j
     positions += 64 + 64j
 
     velocities = get_initial_velocities(positions, inital_speed)
 
-    return positions, velocities
+    return positions.astype(np.complex64), velocities.astype(np.complex64)
 
 def get_central_force_vectors(in_coords, central_mass, G):
     diff = (256 + 256j) - in_coords

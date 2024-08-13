@@ -3,7 +3,13 @@ from PIL import Image, ImageSequence
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+import vkdispatch as vd
+
 def make_frame(positions, radius = (10), center = (256, 256), size = (512, 512)):
+    position_array = positions
+    if isinstance(positions, vd.Buffer):
+        position_array = positions.read(0)
+
     frame = np.zeros(size)
     
     # Add central mass
@@ -14,7 +20,7 @@ def make_frame(positions, radius = (10), center = (256, 256), size = (512, 512))
     frame[rad2 <= radius**2] = 255
 
     # Add particles
-    position_indexes = np.array([positions.real.astype(int), positions.imag.astype(int)]).T
+    position_indexes = np.array([position_array.real.astype(int), position_array.imag.astype(int)]).T
     position_mask = (position_indexes[:, 0] > 0) & (position_indexes[:, 0] < size[0]) & (position_indexes[:, 1] > 0) & (position_indexes[:, 1] < size[1])
     truncated_positions = position_indexes[position_mask]
     frame[truncated_positions[:, 0], truncated_positions[:, 1]] = 255

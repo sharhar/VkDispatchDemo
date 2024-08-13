@@ -11,13 +11,15 @@ import tqdm
 # You can optionally use this function to enable debugging features
 # vd.initialize(debug_mode=True, log_level=vd.LogLevel.INFO, loader_debug_logs=True)
 
-my_sim = cpu_sim
+my_sim = gpu_sim
 
-positions, velocities = my_sim.make_inital_state(4)
+positions, velocities = my_sim.make_inital_state(8)
 
 frames = []
 for i in tqdm.tqdm(range(400)):
-    positions, velocities = my_sim.do_time_step(positions, velocities, 0.01, 10, 20, 10)
+    positions, velocities = my_sim.do_time_step(positions, velocities, 0.01, 20, 80, 10)
     frames.append(gif_utils.make_frame(positions))
+
+print('Saving gif...')
 
 gif_utils.save_frames(frames, output_path='output.gif')

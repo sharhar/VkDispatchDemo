@@ -37,10 +37,13 @@ def do_single_iteration(pos: Buff[c64], vel: Buff[c64], Cm: Const[f32], G: Const
     vc.end()
 
     current_vel = vel[ind].copy()
-    center_vel = center_acc * dt
-    vel[ind] += center_vel
+    current_vel += center_acc * dt    
+    current_pos = (my_position + current_vel * dt).copy()
 
-    pos[ind] += current_vel * dt
+    vc.memory_barrier()
+
+    vel[ind] = current_vel
+    pos[ind] = current_pos
 
 my_cmd_list = vd.CommandList()
 

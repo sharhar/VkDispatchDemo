@@ -3,6 +3,24 @@ from PIL import Image, ImageSequence
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+def make_frame(positions, radius = (10), center = (256, 256), size = (512, 512)):
+    frame = np.zeros(size)
+    
+    # Add central mass
+    mesh = np.meshgrid(np.arange(size[0]), np.arange(size[1]))
+    x = mesh[0]
+    y = mesh[1]
+    rad2 = (x - center[0])**2 + (y - center[1])**2
+    frame[rad2 <= radius**2] = 255
+
+    # Add particles
+    position_indexes = np.array([positions.real.astype(int), positions.imag.astype(int)]).T
+    position_mask = (position_indexes[:, 0] > 0) & (position_indexes[:, 0] < size[0]) & (position_indexes[:, 1] > 0) & (position_indexes[:, 1] < size[1])
+    truncated_positions = position_indexes[position_mask]
+    frame[truncated_positions[:, 0], truncated_positions[:, 1]] = 255
+
+    return frame
+
 def save_frames(frames, output_path='output.gif'):
     # Convert the 2D arrays to PIL images
     pil_images = [Image.fromarray(frame.astype(np.uint8)) for frame in frames]

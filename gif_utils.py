@@ -2,6 +2,8 @@ import numpy as np
 from PIL import Image, ImageSequence
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
+import cupy as cp
+import warp as wp
 
 import vkdispatch as vd
 
@@ -9,6 +11,14 @@ def make_frame(positions, radius = (10), center = (256, 256), size = (512, 512))
     position_array = positions
     if isinstance(positions, vd.Buffer):
         position_array = positions.read(0)
+    
+    if isinstance(positions, cp.ndarray):
+        position_array = cp.asnumpy(position_array)
+
+    if isinstance(positions, wp.array):
+        position_cpu = positions.numpy()
+
+        position_array = position_cpu[:, 0] + position_cpu[:, 1] * 1j
 
     frame = np.zeros(size)
     
